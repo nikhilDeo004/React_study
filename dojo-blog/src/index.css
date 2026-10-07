@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+/* =========================================================
+   1. THEME VARIABLES  (change colors here, updates everywhere)
+   ========================================================= */
+:root {
+  --bg: #050505;
+  --card: #111111;
+  --fg: #fafafa;
+  --muted: #8b8b93;
+  --line: rgba(161, 161, 170, 0.28);
+  --light: #e4e4e7;
+}
+
+/* =========================================================
+   2. BASE
+   ========================================================= */
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg);
+  padding: 24px;
+}
+
+/* blinking-digits canvas (behind everything) */
+#bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* =========================================================
+   3. PAGE FRAME  (outer dashed box + inner guide lines)
+   ========================================================= */
+.App {
+  position: relative;
+  max-width: 1200px;
+  min-height: calc(100vh - 48px);
+  margin: 0 auto;
+  border: 1px dashed var(--line);
+}
+
+.App::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 80px;
+  right: 80px;
+  border-left: 1px dashed var(--line);
+  border-right: 1px dashed var(--line);
+  pointer-events: none;
+}
+
+/* =========================================================
+   4. BUTTONS  (shared style for every <button>)
+   ========================================================= */
+button {
+  padding: 12px 20px;
+  font: 500 13px 'Geist Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--light);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #fff;
+}
+
+/* =========================================================
+   5. NAVBAR
+   ========================================================= */
+.navbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 24px 112px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.navbar h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.navbar .links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
+}
+
+.navbar a {
+  position: relative;
+  padding: 12px 20px;
+  font: 500 13px 'Geist Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* first link: corner brackets */
+.navbar a:first-child::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  pointer-events: none;
+  --l: linear-gradient(#fafafa, #fafafa);
+  background:
+    var(--l) 0 0 / 8px 1px,       var(--l) 0 0 / 1px 8px,
+    var(--l) 100% 0 / 8px 1px,    var(--l) 100% 0 / 1px 8px,
+    var(--l) 0 100% / 8px 1px,    var(--l) 0 100% / 1px 8px,
+    var(--l) 100% 100% / 8px 1px, var(--l) 100% 100% / 1px 8px;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.navbar a:first-child:hover::before {
+  opacity: 1;
+}
+
+/* last link: solid light button */
+.navbar a:last-child {
+  background: var(--light);
+  color: #0a0a0a;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.navbar a:last-child:hover {
+  background: #fff;
+}
+
+/* =========================================================
+   6. CONTENT AREA  (dotted grid background)
+   ========================================================= */
+.content {
+  position: relative;
+  padding: 96px 112px 120px;
+  border-bottom: 1px dashed var(--line);
+  background-image: radial-gradient(rgba(161, 161, 170, 0.18) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* =========================================================
+   7. HOME LAYOUT  (left: heading | right: blog boxes)
+   ========================================================= */
+.Home {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.Home h1 {
+  max-width: 640px;
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+/* small badge above the heading */
+.Home h1::before {
+  content: 'Home';
+  display: inline-block;
+  margin-bottom: 28px;
+  padding: 10px 16px;
+  background: var(--card);
+  color: var(--muted);
+  font: 400 13px 'Geist Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* right column: boxes stacked vertically */
+.home-right {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* =========================================================
+   8. BLOG LIST BOX
+   ========================================================= */
+.blog-list {
+  padding: 24px;
+  background: var(--card);
+  border: 1px dashed var(--line);
+}
+
+/* one blog row: text on the left, delete button on the right */
+.blog-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px dashed var(--line);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.blog-preview:first-child { padding-top: 0; }
+.blog-preview:last-child  { padding-bottom: 0; border-bottom: none; }
+
+/* blog name (big) */
+.blog-preview h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* author (smaller, grey) */
+.blog-preview p {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* small delete button */
+.blog-preview .Delete_Button {
+  padding: 6px 12px;
+  font-size: 11px;
+}
+
+/* hover: dim the other rows */
+.blog-list:hover .blog-preview        { opacity: 0.6; }
+.blog-list:hover .blog-preview:hover  { opacity: 1; }
+
+/* =========================================================
+   9. RESPONSIVE
+   ========================================================= */
+@media (max-width: 800px) {
+  .Home {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  body { padding: 8px; }
+  .App::before { display: none; }
+  .navbar { padding: 16px; }
+  .navbar .links { gap: 12px; }
+  .content { padding: 48px 16px; }
+}

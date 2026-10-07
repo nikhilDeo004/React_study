@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+
+  <canvas id="bg"></canvas>
+<script>
+const c = document.getElementById('bg'), x = c.getContext('2d');
+const S = 13; let W, H, cols, cells;
+function resize() {
+  W = c.width = innerWidth; H = c.height = innerHeight;
+  cols = Math.ceil(W / S);
+  cells = Array.from({ length: cols * Math.ceil(H / S) },
+    () => ({ ch: Math.random() < .5 ? '0' : '1', p: Math.random() * 6.28 }));
+}
+resize(); addEventListener('resize', resize);
+
+function draw(t) {
+  x.clearRect(0, 0, W, H);
+  x.font = '12px "Geist Mono", monospace';
+  const beam = ((t / 3) % (W + H + 600)) - 300;      // beam position on the diagonal
+  cells.forEach((cell, i) => {
+    const px = (i % cols) * S, py = Math.floor(i / cols) * S;
+    const glow = Math.max(0, 1 - Math.abs(px + py - beam) / 160);  // near the beam?
+    const blink = .5 + .5 * Math.sin(t / 600 + cell.p);            // slow blinking
+    x.fillStyle = `rgba(255,255,255,${0.04 + blink * 0.05 + glow * blink * 0.6})`;
+    x.fillText(cell.ch, px, py);
+    if (Math.random() < .0004) cell.ch = cell.ch === '0' ? '1' : '0'; // random flips
+  });
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
