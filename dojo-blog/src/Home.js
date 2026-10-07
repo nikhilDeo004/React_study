@@ -1,23 +1,15 @@
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import BlogList from "./BlogList";
+import useFetch from "./useFetch";
 
 const Home = () => {
-  const [blogs, setBlogs] = useState([
-    { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
-    { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
-    { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
-  ]);
+  const { data: blogs, isPending, error, setData: setBlogs } = useFetch('http://localhost:8000/blogs');
 
-  const [name,setName]=useState('mario');
+  const [name, setName] = useState('mario');
 
-  const handleDelete=(id)=>{
-    const newBlogs = blogs.filter(blog => blog.id !== id);
-    setBlogs(newBlogs)
-  }
-
-  useEffect(()=>{
-    console.log('Use Effect Ran');
-  })
+  const handleDelete = (id) => {
+    setBlogs(blogs.filter(blog => blog.id !== id));
+  };
 
   return (
     <div className="Home">
@@ -26,15 +18,22 @@ const Home = () => {
         <h1>Home Page</h1>
       </div>
 
-  {/* RIGHT: two separate boxes stacked */}
-  <div className="home-right">
-    <BlogList blogs={blogs} title="All Blogs !" handleDelete={handleDelete} />
-    <BlogList blogs={blogs.filter(b => b.author === 'mario')} title="Mario's Blogs !" handleDelete={handleDelete} />
-    <BlogList blogs={blogs.filter(b => b.author === 'yoshi')} title="Yoshi's Blogs !" handleDelete={handleDelete} />
-    <button onClick={()=> setName('luigi')}>Change name</button>
-    <p>{name}</p>
-  </div>
+      {/* RIGHT: boxes stacked */}
+      <div className="home-right">
+        {error && <div>{error}</div>}
+        {isPending && <div>Loading...</div>}
 
+        {blogs && (
+          <>
+            <BlogList blogs={blogs} title="All Blogs !" handleDelete={handleDelete} />
+            <BlogList blogs={blogs.filter(b => b.author === 'mario')} title="Mario's Blogs !" handleDelete={handleDelete} />
+            <BlogList blogs={blogs.filter(b => b.author === 'yoshi')} title="Yoshi's Blogs !" handleDelete={handleDelete} />
+          </>
+        )}
+
+        <button onClick={() => setName('luigi')}>Change name</button>
+        <p>{name}</p>
+      </div>
     </div>
   );
 };
